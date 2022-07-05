@@ -1207,3 +1207,5 @@ Rcpp::List CaseInfluence_poisson(arma::mat X, arma::vec Y, arma::vec theta_0, do
   return Rcpp::List::create(Rcpp::Named("global_influence") = CaseInfluence_vec,
                             Rcpp::Named("cook_distance") = Cook_vec);
 }
+
+// To check how github works
