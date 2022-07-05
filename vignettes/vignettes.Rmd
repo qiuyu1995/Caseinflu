@@ -33,7 +33,7 @@ For each given data and specified model, `Caseinflu` package can generate three 
 
 2. Cook's distance \
 
-3. Local influence (Only for nonsmooth models) For more details, see section 5.1.3 of [Tu, S. (2019). *Case Influence and Model Complexity in Regression and Classification*](https://www.proquest.com/docview/2353041291?pq-origsite=gscholar&fromopenview=true).
+3. Local influence. For more details, see section 5.1.3 of [Tu, S. (2019). *Case Influence and Model Complexity in Regression and Classification*](https://www.proquest.com/docview/2353041291?pq-origsite=gscholar&fromopenview=true).
 
 Next, we use the following examples to illustrate how we can obtain theses metrics.
 
@@ -124,3 +124,12 @@ Here is the command to compute `global influence` and `Cook's distance` under lo
 ```
 
 For the computation of global influence under other generalized linear models, we only need to specify the argument `class` to the model we want. This version also supports poisson regression (`class = "poisson"`). 
+
+To compute **local influence** for the generated data under logistic regression, we can call the function `Compute_LocalInflu_GLM`. It will output a vector of length $n$ that is the **local influence** for each case.
+```{r}
+# local_influence_logistic = Compute_LocalInflu_GLM(X, Y, lam, class = "logistic", influence_measure = "BDLD")
+```
+If we change the class as "poisson", then the local influence can be computed for poisson regression.
+```{r}
+# local_influence_poisson = Compute_LocalInflu_GLM(X, Y, lam, class = "poisson")
+```
