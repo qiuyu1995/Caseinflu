@@ -170,6 +170,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// LocalInfluence_logistic
+arma::vec LocalInfluence_logistic(arma::mat X, arma::vec Y, arma::vec theta_0, double lam, std::string influence_measure);
+RcppExport SEXP _Caseinflu_LocalInfluence_logistic(SEXP XSEXP, SEXP YSEXP, SEXP theta_0SEXP, SEXP lamSEXP, SEXP influence_measureSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type theta_0(theta_0SEXP);
+    Rcpp::traits::input_parameter< double >::type lam(lamSEXP);
+    Rcpp::traits::input_parameter< std::string >::type influence_measure(influence_measureSEXP);
+    rcpp_result_gen = Rcpp::wrap(LocalInfluence_logistic(X, Y, theta_0, lam, influence_measure));
+    return rcpp_result_gen;
+END_RCPP
+}
 // poisson_Newton_high_dimension
 Rcpp::List poisson_Newton_high_dimension(arma::mat X, arma::vec Y, arma::vec theta_0, double t_max, double lam, int case_index, double epsilon, double L);
 RcppExport SEXP _Caseinflu_poisson_Newton_high_dimension(SEXP XSEXP, SEXP YSEXP, SEXP theta_0SEXP, SEXP t_maxSEXP, SEXP lamSEXP, SEXP case_indexSEXP, SEXP epsilonSEXP, SEXP LSEXP) {
@@ -256,6 +271,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// LocalInfluence_poisson
+arma::vec LocalInfluence_poisson(arma::mat X, arma::vec Y, arma::vec theta_0, double lam);
+RcppExport SEXP _Caseinflu_LocalInfluence_poisson(SEXP XSEXP, SEXP YSEXP, SEXP theta_0SEXP, SEXP lamSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type theta_0(theta_0SEXP);
+    Rcpp::traits::input_parameter< double >::type lam(lamSEXP);
+    rcpp_result_gen = Rcpp::wrap(LocalInfluence_poisson(X, Y, theta_0, lam));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_Caseinflu_case_path_nonsmooth", (DL_FUNC) &_Caseinflu_case_path_nonsmooth, 10},
@@ -267,11 +296,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Caseinflu_logistic_GD", (DL_FUNC) &_Caseinflu_logistic_GD, 8},
     {"_Caseinflu_logistic_compute_LOO", (DL_FUNC) &_Caseinflu_logistic_compute_LOO, 5},
     {"_Caseinflu_CaseInfluence_logistic", (DL_FUNC) &_Caseinflu_CaseInfluence_logistic, 8},
+    {"_Caseinflu_LocalInfluence_logistic", (DL_FUNC) &_Caseinflu_LocalInfluence_logistic, 5},
     {"_Caseinflu_poisson_Newton_high_dimension", (DL_FUNC) &_Caseinflu_poisson_Newton_high_dimension, 8},
     {"_Caseinflu_poisson_Newton_low_dimension", (DL_FUNC) &_Caseinflu_poisson_Newton_low_dimension, 8},
     {"_Caseinflu_poisson_GD", (DL_FUNC) &_Caseinflu_poisson_GD, 8},
     {"_Caseinflu_poisson_compute_LOO", (DL_FUNC) &_Caseinflu_poisson_compute_LOO, 5},
     {"_Caseinflu_CaseInfluence_poisson", (DL_FUNC) &_Caseinflu_CaseInfluence_poisson, 7},
+    {"_Caseinflu_LocalInfluence_poisson", (DL_FUNC) &_Caseinflu_LocalInfluence_poisson, 4},
     {NULL, NULL, 0}
 };
 
