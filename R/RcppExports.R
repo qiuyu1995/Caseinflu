@@ -201,6 +201,25 @@ CaseInfluence_logistic <- function(X, Y, theta_0, t_max, lam, epsilon, method, i
     .Call(`_Caseinflu_CaseInfluence_logistic`, X, Y, theta_0, t_max, lam, epsilon, method, influence_measure)
 }
 
+#'Compute local influence for each case under logistic regression
+#'
+#' @description
+#' Compute the local influence for each case under logistic regression.
+#'
+#' @param X A \eqn{n \times p} feature matrix
+#' @param Y A \eqn{n \times 1} response vector
+#' @param theta_0 A \eqn{p \times 1} vector that corresponds to full-data solution
+#' @param lam Regularization parameter for L2 penalty
+#' @param influence_measure The influence measure used to compute global influence for each case, two options are "FMD" and "BDLD"
+#'
+#' @details
+#' This function will be called by the main function Compute_LocalInflu_GLM, with class = "logistic".
+#'
+#' @return LocalInfluence_vec Local influence for each case
+LocalInfluence_logistic <- function(X, Y, theta_0, lam, influence_measure) {
+    .Call(`_Caseinflu_LocalInfluence_logistic`, X, Y, theta_0, lam, influence_measure)
+}
+
 #'Case-weight adjusted solution path for poisson regression Newton method (\eqn{n \le p})
 #'
 #' @description
@@ -312,5 +331,23 @@ poisson_compute_LOO <- function(X, Y, theta_init, lam, case_index) {
 #' @return cook_distance Cook's distance for each case
 CaseInfluence_poisson <- function(X, Y, theta_0, t_max, lam, epsilon, method) {
     .Call(`_Caseinflu_CaseInfluence_poisson`, X, Y, theta_0, t_max, lam, epsilon, method)
+}
+
+#'Compute local influence for each case under Poisson regression
+#'
+#' @description
+#' Compute the local influence for each case under Poisson regression.
+#'
+#' @param X A \eqn{n \times p} feature matrix
+#' @param Y A \eqn{n \times 1} response vector
+#' @param theta_0 A \eqn{p \times 1} vector that corresponds to full-data solution
+#' @param lam Regularization parameter for L2 penalty
+#'
+#' @details
+#' This function will be called by the main function Compute_LocalInflu_GLM, with class = "poisson".
+#'
+#' @return LocalInfluence_vec Local influence for each case
+LocalInfluence_poisson <- function(X, Y, theta_0, lam) {
+    .Call(`_Caseinflu_LocalInfluence_poisson`, X, Y, theta_0, lam)
 }
 

@@ -614,6 +614,64 @@ Rcpp::List CaseInfluence_logistic(arma::mat X, arma::vec Y, arma::vec theta_0, d
                             Rcpp::Named("cook_distance") = Cook_vec);
 }
 
+//'Compute local influence for each case under logistic regression
+//'
+//' @description
+//' Compute the local influence for each case under logistic regression.
+//'
+//' @param X A \eqn{n \times p} feature matrix
+//' @param Y A \eqn{n \times 1} response vector
+//' @param theta_0 A \eqn{p \times 1} vector that corresponds to full-data solution
+//' @param lam Regularization parameter for L2 penalty
+//' @param influence_measure The influence measure used to compute global influence for each case, two options are "FMD" and "BDLD"
+//'
+//' @details
+//' This function will be called by the main function Compute_LocalInflu_GLM, with class = "logistic".
+//'
+//' @return LocalInfluence_vec Local influence for each case
+// [[Rcpp::export(LocalInfluence_logistic)]]
+arma::vec LocalInfluence_logistic(arma::mat X, arma::vec Y, arma::vec theta_0, double lam, std::string influence_measure) {
+  const int n = X.n_rows;
+  const int p = X.n_cols;
+  arma::mat X_t(p,n);
+  X_t=arma::trans(X);
+
+  arma::vec b_Newton=arma::exp(Y%(X*theta_0)) ;
+  arma::vec weight(n);
+  weight.ones();
+  weight = weight/n;
+  arma::mat hessian(p, p);
+  hessian.zeros();
+  arma::vec theta_grad(p);
+  theta_grad.zeros();
+
+  arma::vec LocalInfluence_vec(n);
+  LocalInfluence_vec.zeros();
+
+  if (n > p) {    
+    arma::vec temp_Newton_1=(b_Newton/pow(1+b_Newton,2))%weight;
+    arma::mat temp_Newton_2=X_t*diagmat(temp_Newton_1)*X+lam*arma::eye(p,p);
+    hessian=arma::solve(temp_Newton_2,arma::eye(p,p));
+  }
+  else {
+    arma::mat U=X_t*diagmat(b_Newton/arma::pow(1+b_Newton,2)%weight/lam);
+    arma::mat V=X;
+    hessian=1/lam*(arma::eye(p,p)-U*arma::solve(arma::eye(n,n)+V*U,V));
+  }
+
+  for (int case_index = 0; case_index < n; case_index++) {
+    theta_grad=hessian*(-1/(1+b_Newton[case_index])*Y[case_index]*weight[case_index]*X_t.col(case_index));
+    if (influence_measure == "FMD") {
+      LocalInfluence_vec[case_index] = 2.0 / n * arma::sum(pow(Y%(X*theta_grad), 2));
+    }
+    else {
+      LocalInfluence_vec[case_index] = 2.0 / n * arma::sum(pow( (1/(1+b_Newton))%Y%(X*theta_grad), 2));
+    }   
+  }
+
+  return LocalInfluence_vec;
+}
+
 //'Case-weight adjusted solution path for poisson regression Newton method (\eqn{n \le p})
 //'
 //' @description
@@ -1208,4 +1266,54 @@ Rcpp::List CaseInfluence_poisson(arma::mat X, arma::vec Y, arma::vec theta_0, do
                             Rcpp::Named("cook_distance") = Cook_vec);
 }
 
-// To check how github works
+//'Compute local influence for each case under Poisson regression
+//'
+//' @description
+//' Compute the local influence for each case under Poisson regression.
+//'
+//' @param X A \eqn{n \times p} feature matrix
+//' @param Y A \eqn{n \times 1} response vector
+//' @param theta_0 A \eqn{p \times 1} vector that corresponds to full-data solution
+//' @param lam Regularization parameter for L2 penalty
+//'
+//' @details
+//' This function will be called by the main function Compute_LocalInflu_GLM, with class = "poisson".
+//'
+//' @return LocalInfluence_vec Local influence for each case
+// [[Rcpp::export(LocalInfluence_poisson)]]
+arma::vec LocalInfluence_poisson(arma::mat X, arma::vec Y, arma::vec theta_0, double lam) {
+  const int n = X.n_rows;
+  const int p = X.n_cols;
+  arma::mat X_t(p,n);
+  X_t=arma::trans(X);
+
+  arma::vec b_Newton=arma::exp(X*theta_0);
+  arma::vec weight(n);
+  weight.ones();
+  weight = weight/n;
+  arma::mat hessian(p, p);
+  hessian.zeros();
+  arma::vec theta_grad(p);
+  theta_grad.zeros();
+
+  arma::vec LocalInfluence_vec(n);
+  LocalInfluence_vec.zeros();
+
+  if (n > p) {    
+    arma::vec temp_Newton_1=b_Newton%weight;
+    arma::mat temp_Newton_2=X_t*diagmat(temp_Newton_1)*X+lam*arma::eye(p,p);
+    hessian=arma::solve(temp_Newton_2,arma::eye(p,p));
+  }
+  else {
+    arma::mat U=X_t*diagmat(b_Newton%weight/lam);
+    arma::mat V=X;
+    hessian=1/lam*(arma::eye(p,p)-U*arma::solve(arma::eye(n,n)+V*U,V));
+  }
+
+  for (int case_index = 0; case_index < n; case_index++) {
+    theta_grad=hessian*((b_Newton[case_index]-Y[case_index])*weight[case_index]*X_t.col(case_index));
+    LocalInfluence_vec[case_index] = 2.0 / n * arma::sum(pow(b_Newton%(X*theta_grad), 2));
+  }
+
+  return LocalInfluence_vec;
+}
