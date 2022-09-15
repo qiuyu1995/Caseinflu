@@ -59,6 +59,8 @@ where covariates $\{x_{ij}: i = 1, \cdots, n, \ j = 1, \cdots, p\}$, coefficient
 
 To compute **global influence** for the generated data under quantile regression, we can call the function `Compute_CaseInflu_nonsmooth`. All we need to do is to specify the `class = "quantile"`. The function will output a vector of length $n$ that is the global influence for each case. To get the global influence, the function will compute the path for \eqref{eq:case_weight_adjusted} as $w$ changes from 1 to 0, so the LOO solution can be directly obtained without extra computations. Then the function will also output a vector of length $n$ that is the **Cook's distance** for each case.
 ```{r}
+# library(Caseinflu)
+# library(CVXR)
 # case_influence_quantile = Compute_CaseInflu_nonsmooth(X, Y, lam, class = "quantile", tau = tau)
 # case_influence_quantile$global_influence
 # case_influence_quantile$cook_distance
