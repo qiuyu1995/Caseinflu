@@ -1,0 +1,14 @@
+Package: Caseinflu
+Type: Package
+Title: Case influence assessment via case influence graph
+Version: 1.0
+Date: 2022-05-28
+Author: Qiuyu Gu and Yunzhang Zhu
+Maintainer: Qiuyu Gu <gu.675@osu.edu>
+Description: Assess the case influence via case influence graph for L2 regularized M-estimation problems
+License: GPL (>= 2)
+Imports: Rcpp (>= 1.0.6), CVXR
+LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 7.2.0
+Encoding: UTF-8
+
